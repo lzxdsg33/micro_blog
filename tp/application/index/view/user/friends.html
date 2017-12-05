@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tik-Talk</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <style type="text/css">
+
+      div.post-thumbnail {
+          position: absolute;
+      }
+      div.post-tabs {
+          margin-top: 16px;
+      }
+      ul.posts {
+          list-style-type: none;
+          padding: 0px;
+          margin: 16px 0px 0px 0px;
+          border-top: 1px solid #e0e0e0;
+      }
+      div.post-tabs ul.posts {
+          margin: 0px;
+          border-top: none;
+      }
+      ul.posts li.post {
+          padding: 8px;
+          border-bottom: 1px  solid #e0e0e0;
+      }
+      div.post-author {
+          font-weight: bold;
+      }
+      div.post-content {
+          margin-left: 48px;
+          min-height: 48px;
+      }
+      div.post-footer {
+          text-align: right;
+      }
+      div.comment-date {
+          float: right;
+      }
+      div.post-date {
+          float: right;
+      }
+      img {
+        position:absolute; 
+        /*left:360px; */
+        /*top:90px; */
+        width: 40px; 
+        height: 40px; 
+      }
+      .center-block {  
+        float: none;  
+        display: block;  
+        margin-left: auto;  
+        margin-right: auto;  
+      }  
+    </style>
+
+  </head>
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Tik-Talk</a>
+        </div>
+        <div id="navbar">
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="{:url('/show_posts',['tag'=>'My'])}">Home</a></li>
+              <li><a href="{:url('index/user/create')}">Regist</a></li>
+              <li><a href="{:url('index/user/info')}">Friends</a></li>
+              <li class="active"><a href="{:url('index/user/user_login_status')}">{$username}</a></li>
+            </ul>
+        </div>
+      </div>
+    </div>
+    
+
+  <div class="container">
+    <div class="page-header" >
+      <h1 class="text-center">Search</h1>
+    </div>
+    <div class="col-md-6 center-block">
+      <form class="form-signin" action="{:url('index/user/friends')}" method="POST" role="form">
+        <div class="form-group  required"><label class="control-label" for="email">搜索好友的Email</label>
+            <input  id="email" type="text" placeholder="Email" class="form-control" name="email" required>
+        </div>
+        <button id="sighBtn" type="submit" class="btn btn-lg btn-success btn-block login-button">Search</button>
+      </form>
+    </div>
+  </div
+
+
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>

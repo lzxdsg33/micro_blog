@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tik-Talk</title>
+  <<link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+  <style type="text/css">
+  img {
+    position:absolute; 
+    width: 250px; 
+    height: 250px; 
+    border: solid green;
+  }
+  
+  p {
+    font-family: 'Microsoft Yahei';
+  }
+  </style>
+</head>
+<body>
+  <div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle"
+        data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Tik-Talk</a>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="{:url('/')}">Home</a></li>
+          <li><a href="{:url('index/user/create')}">Regist</a></li>
+          <li><a href="{:url('index/user/logout')}" style="color:green;">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="page-header"><h1>Edit Your Profile</h1></div>
+    	<img class="img-rounded profile-thumbnail" src="/public/uploads/{$user_data.pic_path}">
+      <div class="profile-header" style="min-height: 240px;margin-left: 280px;">
+        <div class="col-md-4">
+          <form action="{:url('index/user/update')}" enctype="multipart/form-data" method="post" class="form" role="form">  
+            <div class="form-group "><label class="control-label" for="about_me">About me</label>
+              <textarea class="form-control" id="about_me" name="about_me"></textarea>
+            </div>
+            <div class="form-group "><label class="control-label" for="about_me">修改头像</label>
+              <input type="file" name="image" >
+            </div>
+            <input type="submit" value="修改" class="btn btn-success">
+          </form>
+        <div>
+          <form method="post" enctype="multipart/form-data" action="{:url('index/user/info')}">
+        </form>
+        </div>
+        
+      </div>
+  </div>
+</div>
+
+  <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+</body>
+</html>

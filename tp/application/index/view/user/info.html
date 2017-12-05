@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tik-Talk</title>
+  <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+  <style type="text/css">
+    img {
+      position:absolute; 
+      width: 250px; 
+      height: 250px; 
+      border: solid green;
+    }
+    p {
+      font-family: 'Microsoft Yahei';
+      color: #3C3C3C;
+    }
+    div.post-thumbnail {
+        position: absolute;
+    }
+    div.post-tabs {
+        margin-top: 16px;
+    }
+    ul.posts {
+        list-style-type: none;
+        padding: 0px;
+        margin: 16px 0px 0px 0px;
+        border-top: 1px solid #e0e0e0;
+    }
+    div.post-tabs ul.posts {
+        margin: 0px;
+        border-top: none;
+    }
+    ul.posts li.post {
+        padding: 8px;
+        border-bottom: 1px  solid #e0e0e0;
+    }
+    div.post-author {
+        font-weight: bold;
+    }
+    div.post-content {
+        margin-left: 48px;
+        min-height: 48px;
+    }
+    div.post-footer {
+        text-align: right;
+    }
+    div.comment-date {
+        float: right;
+    }
+    div.post-date {
+        float: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle"
+        data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Tik-Talk</a>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="{:url('/show_posts',['tag'=>'My'])}">Home</a></li>
+          <li><a href="{:url('index/user/create')}">Regist</a></li>
+          <li><a href="{:url('index/user/logout')}" style="color:green;">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="page-header">
+    	<img class="img-rounded profile-thumbnail" src="/public/uploads/{$user_data.pic_path}">
+      <div class="profile-header" style="min-height: 240px;margin-left: 280px;">
+        <h1>{$user_data.nickname}
+        {if !$is_me}
+        <button class="btn btn-primary btn-xs" onclick="add_friends('{$user_data.email}')">关注</button>
+        {/if}
+        </h1>
+        <p>Personal Profile: <em style="color:#921AFF;">{$user_data.profile}</em></p>
+        <p>Email: <a href="mailto:{$user_data.email}">{$user_data.email}</a></p>
+        <p> Member since: <span class="flask-moment" style="color:gray;">{$user_data.create_time}</span></p>
+        <p>Last seen: <span class="flask-moment" style="color:gray;">{$user_data.update_time}</span></p>
+        <p> <a href="">我关注的: <span class="badge">{$user_data.following}</span></a> |
+        <a href="">我的fans: <span class="badge">{$user_data.fans}</span></a></p>
+        {if $is_me}
+        <p><a class="btn btn-default" href="{:url('index/user/update')}" style="background-color: #DDD">Edit Profile</a></p>
+        {/if}
+      </div>
+    </div>
+
+    <div class="post-tabs">
+      <ul class="nav nav-tabs">
+        <li class="active">
+          <a href="/all">My Following</a>
+        </li>    
+      </ul>
+      {volist name="following_list" id="lists" }
+      <ul class="posts">
+        <li class="post">
+          <div class="post-thumbnail">
+              <img class="img-rounded profile-thumbnail" src="/public/uploads/{$lists.pic_path}" style="width: 40px;height: 40px;">
+            </div>
+            <div class="post-content">
+              <div class="post-date"><span class="flask-moment">关注日期:{$lists.follow_time}</span></div>
+              <div class="post-author"><a href="{:url('index/user/f_hp',[$lists.be_followed =>'123'])}">{$lists.be_followed}</a></div>
+              <div class="post-body">
+                <p style="color:black;">{$lists.profile}</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        {/volist}
+        {$paginate->render()}
+      </div>
+    </div>
+  <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+      function add_friends(email){
+        $.ajax({
+          url:"{:url('index/user/add_friends')}",//这里指向的就不再是页面了，而是一个方法。
+          data:{email:email},
+          type:"POST",
+          success: function(data){
+            alert(data.result);  
+          },
+       });
+      };
+    </script>
+</body>
+</html>

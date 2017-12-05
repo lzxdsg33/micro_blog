@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>-Tik-Talk-</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/extra.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Tik-Talk</a>
+        </div>
+        <div id="navbar">
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="{:url('/')}">Home</a></li>
+              <li><a href="{:url('index/user/create')}">Regist</a></li>
+              <li><a href="{:url('index/user/logout')}" style="color:green;">Logout</a></li>
+              <li class="active"><a href="{:url('index/user/user_login_status')}">{$username}</a></li>
+            </ul>
+          </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <ul class="posts">
+        <li class="post">
+          <div class="post-thumbnail">
+            <a><img class="img-rounded profile-thumbnail" src="/public/uploads/{$post.pic_path}" style="width: 40px;height: 40px;"></a>
+            </a>
+          </div>
+          <div class="post-content">
+            <div class="post-date"><span>{$post->date_convert()}</span></div>
+            <div class="post-author"><a href="{:url('index/user/f_hp',[$post.author =>'123'])}">{$post.author}</a></div>
+            <div class="post-body">
+              <p>{$post.body}</p>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <h4>Comments</h4>
+      <div class="comment-form">
+        <form action="#" method="post" class="form" role="form">
+          <input type="hidden" name="TOKEN" value="{:session('TOKEN')}" />
+          <input id="csrf_token" name="comment" type="hidden">
+          <div class="form-group  required"><label class="control-label" for="body"></label>
+            <input class="form-control" id="body" name="body" required type="text" value="">
+          </div>
+          <input class="btn btn-default" id="submit" name="submit" type="submit" value="Submit">
+        </form>
+      </div>
+      {volist name="comments" id="comment" }
+      <ul class="comments">
+        <li class="comments">
+          <div class="comment-thumbnail">
+            <a><img class="img-rounded profile-thumbnail" src="/public/uploads/{$comment.pic_path}" style="width: 40px;height: 40px;"></a>
+          </div>
+          <div class="comment-content">
+            <div class="comment-date"><span class="flask-moment">{$comment->date_convert()}</span></div>
+            <div class="comment-author"><a href="{:url('index/user/f_hp',[$comment.comment_author =>'123'])}">{$comment.comment_author}</a></div>
+            <div class="comment-body">{$comment.comment_body}</div>
+          </div>
+        </li>
+      </ul>
+      {/volist}
+      {if $comments}{$comments->render()}{/if}
+      
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>

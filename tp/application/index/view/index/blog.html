@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>-Tik-Talk-</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Tik-Talk</a>
+        </div>
+        <div id="navbar">
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="{:url('/')}">Home</a></li>
+              <li><a href="{:url('index/user/create')}">Regist</a></li>
+              <li><a href="{:url('index/user/login_form')}">Login</a></li>
+              <li class="active"><a href="{:url('index/user/user_login_status')}">{$username}</a></li>
+            </ul>
+          </div>
+      </div>
+    </div>
+
+    <div class="container">
+    <div class="page-header" >
+    </div>
+    <div class="col-md-12 center-block">
+      <h3 style="color:gray;font-family:Microsoft Yahei;">写下今天发生的事情吧，或者此时此刻你的心情...</h3>
+      <form class="form-signin" action="{:url('/blog')}" method="POST" role="form">
+        <div class="form-group  required"><label class="control-label" for="body">What is on your mind ?</label>
+          <textarea class="form-control" id="flask-pagedown-body" name="body" required></textarea>
+        </div>
+        <button id="sighBtn" type="submit" class="btn btn-primary">发布</button>
+      </form>
+    </div>
+  </div>
+
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>

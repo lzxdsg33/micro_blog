@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>Tik-Talk</title>
+
+    <!-- Bootstrap -->
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Tik-Talk</a>
+        </div>
+        <div id="navbar">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{:url('/')}">Home</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="jumbotron">
+
+      <div class="container">
+        <h2><strong>用户注册</strong></h2>
+        <form  action="{:url('index/user/add')}" method="POST">
+          <div class="form-group  required"><label class="control-label" for="email">用户昵称</label>
+            <input type="text" placeholder="Nickname" class="form-control" name="nickname" required>
+          </div>
+
+          <div class="form-group  required"><label class="control-label" for="email">密码</label>
+            <input type="password" placeholder="Password" class="form-control"  value="" name="password">
+          </div>
+
+          <div class="form-group  required"><label class="control-label" for="email">邮箱地址</label>
+            <input type="text" placeholder="Email" class="form-control" value="" name="email">
+          </div>
+          
+          <div class="form-group  required"><label class="control-label" for="email">生日</label>
+            <select name="year" id="year" >
+              <script type="text/javascript">
+                for(i=1980;i<2020;i++){document.write("<option value='"+i+"'>"+i+"</option>")}
+              </script>
+            </select>
+            <select name="month" id="month" >
+              <script type="text/javascript">
+                for(i=1;i<13;i++){document.write("<option value='"+i+"'>"+i+"</option>")}
+              </script>
+            </select>
+            <select name="day" id="day" >
+              <script type="text/javascript">
+                for(i=1;i<32;i++){document.write("<option value='"+i+"'>"+i+"</option>")}
+              </script>
+            </select>
+          </div>
+            <div class="form-group"><button type="submit" class="btn btn-success">Confirm</button>
+              <a href="{:url('/show_posts',['tag'=>'My'])}"><input type="button" class="btn btn-danger" value="Cancle"></input></a>
+            </div>
+        </form>
+
+      </div>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html> 

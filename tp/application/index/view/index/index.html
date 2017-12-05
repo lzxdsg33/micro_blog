@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tik-Talk</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/extra.css" rel="stylesheet">
+    <style type="text/css">
+          img {
+      position:absolute; 
+      width: 250px; 
+      height: 250px; 
+      border: solid green;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Tik-Talk</a>
+        </div>
+        <div id="navbar">
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="#">Home</a></li>
+              <li><a href="{:url('index/user/create')}">Regist</a></li>
+              <li><a href="{:url('index/user/friends')}">Friends</a></li>
+              {if $user_data.status eq 0}
+              <li><a href="{:url('index/user/login_form')}">Login</a></li>
+              {else}
+              <li><a href="{:url('index/user/logout')}" style="color:green;">Logout</a></li>
+              {/if}
+              <li class="active"><a href="{:url('index/user/user_login_status')}">{$user_data.nickname}</a></li>
+            </ul>
+          </div>
+      </div>
+    </div>
+    
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Hello, <span style="color:#c9c; ">{$user_data.nickname}</span>!</h1>
+        <p><strong style="color:#888;">一起跟世界分享你的点点滴滴吧！此时此刻正在发生的事情，亦或者此时此刻的心情都可以成为值得记录的精彩瞬间！赶快发布一条心情吧！</strong></p>
+        <p><a class="btn btn-primary btn-lg" href="{:url('index/index/blog')}" role="button">分享心情.. &raquo;</a></p>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="post-tabs">
+        <ul class="nav nav-tabs">
+          <li class="active">
+            <a href="{:url('/show_posts',['tag'=>'My'])}">My</a>
+          </li>
+          <li class="active">
+            <a href="{:url('/show_posts',['tag'=>'Followings'])}">Followings</a>
+          </li>     
+        </ul>
+
+        {volist name="body" id="posts" }
+        <ul class="posts">
+          <li class="post">
+            <div class="post-thumbnail">
+              <a href="{:url('index/index/user/info')}">
+                <img class="img-rounded profile-thumbnail" src="/public/uploads/{$posts.pic_path}" style="width: 40px;height: 40px;">
+              </a>
+            </div>
+            <div class="post-content">
+              <div class="post-date"><span>{$posts.timestamp}</span></div>
+              <div class="post-author"><a href="{:url('index/user/f_hp',[$posts.author =>'123'])}">{$posts.author}</a></div>
+              <div class="post-body">
+                <p>{$posts.body}</p>
+              </div>
+              <div class="post-footer">
+                {if $posts.is_like eq true }
+                <button id="like_btn_{$posts.id}" class="btn btn-success btn-xs" onclick="liked({$posts.id},'{$user_data.email}')"><span>{$posts.liked}</span> Likes</button>
+                {else}
+                <button id="like_btn_{$posts.id}" class="btn btn-primary btn-xs" onclick="liked({$posts.id},'{$user_data.email}')"><span>{$posts.liked}</span> Likes</button>
+                {/if}
+                <a href="{:url('/comments',['id'=>$posts.id])}" class="btn btn-primary btn-xs">{$posts.comments} Comments</a>
+                {if $user_data.email eq $posts.author}
+                <button class="btn btn-danger btn-xs" onclick="del({$posts.id})">Delete</button>
+                {/if}
+              </div>
+            </div>
+          </li>
+        </ul>
+        {/volist}
+        {if $body}{$body->render()}{/if}
+      </div>
+    </div>
+
+
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      function liked(post_id, post_author){
+        $.ajax({
+          url:"{:url('index/index/like')}",//这里指向的就不再是页面了，而是一个方法。
+          data:{id:post_id,email:post_author},
+          type:"POST",
+          success: function(data){
+            if(data.is_like == 1){
+              alert('您已经点过赞了！');
+            }else{
+              var btn = '#like_btn_' + post_id;
+              var btn_span = '#like_btn_' + post_id + ' span';
+              var liked_counts = data.liked_count ;
+
+              $(btn_span).html(liked_counts);
+              $(btn).attr("class", "btn btn-success btn-xs"); 
+            }  
+          },
+       });
+     };
+
+      function del(post_id){
+        var confirm_message = confirm('是否删除该条心情?');
+        if(confirm_message==true){
+          var temp = document.createElement("form");        
+          temp.action = "{:url('index/index/delete')}";        
+          temp.method = "post";        
+          
+          var opt = document.createElement("textarea");    
+          opt.name = 'post_id';
+          opt.value = post_id;
+          temp.appendChild(opt);   
+          document.body.appendChild(temp);        
+          temp.submit();      
+          return temp;  
+        }
+      };
+
+    </script>
+  </body>
+</html>
