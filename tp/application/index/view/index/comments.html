@@ -1,30 +1,6 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>-Tik-Talk-</title>
-    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/public/static/css/extra.css" rel="stylesheet">
-  </head>
+{include file="common/header" /}
   <body>
-    <div class="navbar navbar-inverse" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">Tik-Talk</a>
-        </div>
-        <div id="navbar">
-            <ul class="nav navbar-nav navbar-right">
-              <li><a href="{:url('/')}">Home</a></li>
-              <li><a href="{:url('index/user/create')}">Regist</a></li>
-              <li><a href="{:url('index/user/logout')}" style="color:green;">Logout</a></li>
-              <li class="active"><a href="{:url('index/user/user_login_status')}">{$username}</a></li>
-            </ul>
-          </div>
-      </div>
-    </div>
-
+    {include file="common/top" /}
     <div class="container">
       <ul class="posts">
         <li class="post">
@@ -34,7 +10,7 @@
           </div>
           <div class="post-content">
             <div class="post-date"><span>{$post->date_convert()}</span></div>
-            <div class="post-author"><a href="{:url('index/user/f_hp',[$post.author =>'123'])}">{$post.author}</a></div>
+            <div class="post-author"><a href="{:url('index/user/friend_address',[$post.author =>'123'])}">{$post.author}</a></div>
             <div class="post-body">
               <p>{$post.body}</p>
             </div>
@@ -60,7 +36,7 @@
           </div>
           <div class="comment-content">
             <div class="comment-date"><span class="flask-moment">{$comment->date_convert()}</span></div>
-            <div class="comment-author"><a href="{:url('index/user/f_hp',[$comment.comment_author =>'123'])}">{$comment.comment_author}</a></div>
+            <div class="comment-author"><a href="{:url('index/user/friend_address',[$comment.comment_author =>'123'])}">{$comment.comment_author}</a></div>
             <div class="comment-body">{$comment.comment_body}</div>
           </div>
         </li>

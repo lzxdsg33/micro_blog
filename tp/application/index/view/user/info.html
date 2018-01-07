@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tik-Talk</title>
+  <title>Simple-Talk</title>
   <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
   <style type="text/css">
     img {
@@ -56,35 +56,18 @@
   </style>
 </head>
 <body>
-  <div class="navbar navbar-inverse" role="navigation">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle"
-        data-toggle="collapse" data-target=".navbar-collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="#">Tik-Talk</a>
-      </div>
-      <div class="navbar-collapse collapse">
-        <ul class="nav navbar-nav navbar-right">
-          <li><a href="{:url('/show_posts',['tag'=>'My'])}">Home</a></li>
-          <li><a href="{:url('index/user/create')}">Regist</a></li>
-          <li><a href="{:url('index/user/logout')}" style="color:green;">Logout</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
+  {include file="common/top" /}
   <div class="container">
     <div class="page-header">
     	<img class="img-rounded profile-thumbnail" src="/public/uploads/{$user_data.pic_path}">
       <div class="profile-header" style="min-height: 240px;margin-left: 280px;">
         <h1>{$user_data.nickname}
         {if !$is_me}
-        <button class="btn btn-primary btn-xs" onclick="add_friends('{$user_data.email}')">关注</button>
+          {if $is_friend}
+            <button id="following" class="btn btn-primary btn-xs" onclick="add_friends('{$user_data.email}')">关注</button>
+          {else}
+            <button class="btn btn-success btn-xs" onclick="add_friends('{$user_data.email}')">已关注</button>
+          {/if}
         {/if}
         </h1>
         <p>Personal Profile: <em style="color:#921AFF;">{$user_data.profile}</em></p>
@@ -113,7 +96,7 @@
             </div>
             <div class="post-content">
               <div class="post-date"><span class="flask-moment">关注日期:{$lists.follow_time}</span></div>
-              <div class="post-author"><a href="{:url('index/user/f_hp',[$lists.be_followed =>'123'])}">{$lists.be_followed}</a></div>
+              <div class="post-author"><a href="{:url('index/user/friend_address',[$lists.be_followed =>'123'])}">{$lists.be_followed}</a></div>
               <div class="post-body">
                 <p style="color:black;">{$lists.profile}</p>
               </div>
@@ -133,7 +116,13 @@
           data:{email:email},
           type:"POST",
           success: function(data){
-            alert(data.result);  
+            if (data.sign==1) {alert(data.result);
+            }else{
+              $('#following').attr("class", "btn btn-success btn-xs");
+              $('#following').html("已关注");
+              alert(data.result);
+            }
+            
           },
        });
       };

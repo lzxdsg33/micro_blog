@@ -1,0 +1,29 @@
+
+<div id="result">{$list->render()}</div>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script type="text/javascript">
+      var AjaxPage = function(page){
+            $.ajax({
+                url:"{:url('index/index/test1')}",
+                type:'post',
+                dataType:'json',
+                data: {apage:page},
+                success:function(data){
+                    // console.log(data);
+                    $("#result").html(data.page);
+                }
+            });
+        }
+            //ajax跳转：tag=心情标签（all，my） page=第几页
+      function ajax_jump(tag, page){
+        $.ajax({
+          url:"{:url('index/index/change_tag')}",//这里指向的就不再是页面了，而是一个方法。
+          data:{tag:tag,pages:page},
+          type:"POST",
+          success: function(data){
+            $("#list").html(data);
+        },
+       });
+      };
+</script>

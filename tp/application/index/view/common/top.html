@@ -1,0 +1,20 @@
+<div class="navbar navbar-inverse" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Simple-Talk</a>
+    </div>
+    <div id="navbar">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="{:url('/')}">Home</a></li>
+          <li><a href="{:url('index/user/create')}">注册</a></li>
+          <li><a href="{:url('index/user/friends')}">搜索好友</a></li>
+          {if $user_data.status eq 0}
+          <li><a href="{:url('index/user/login_form')}">登录</a></li>
+          {else}
+          <li><a href="{:url('index/user/logout')}" style="color:green;">登出</a></li>
+          {/if}
+          <li class="active"><a href="{:url('index/user/user_login_status')}">{$user_data.nickname}</a></li>
+        </ul>
+      </div>
+  </div>
+</div>

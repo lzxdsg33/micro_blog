@@ -21,8 +21,22 @@ class User extends Controller
 	//注册页面
 	public function create()
 	{
-		return view();
+		$session = $this->get_session();
+		//渲染顶部的导航条 没登录就是默认Stranger，登录状态为0
+		if(isset($session)){
+			$user_data = $session;
+		}else{
+			$user_data =['nickname' => 'Stranger', 'status' => 0];
+		}
+		$this->assign('user_data', $user_data);
+
+		return $this->fetch('user/create');
 	}
+
+	public function get_session()
+    {   
+        return Session::get('user_data');
+    }
 
 	//注册用户
 	public function add()
@@ -31,24 +45,24 @@ class User extends Controller
 		//数据库字段为int类型，现在日期是str，暂时先这样处理，到时候做成下拉框
 		// $date_to_int = (int)strtotime(input('birthday'));
 		$input = input('post.');
+
  		$data = [
  			'nickname' => $input['nickname'],
  			'password' => $input['password'],
  			'email'    => $input['email'],
   		];
 
-		$nickname = UserModel::get(['nickname'=>$data['nickname']]);
-        $email =  UserModel::get(['email'=>$data['email']]);
-        //判断是否已经有同名或同email的用户注册
-        if ($nickname){
+  		//检测重复值
+  		$repeat_value = $input['error_type'];
+        if ($repeat_value == 'nickname'){
         	 return $this->error('昵称已存在');
-    	}elseif ($email) {
+    	}elseif ($repeat_value == 'email') {
     		return $this->error('Email已存在');
     	}
 
 		//验证规则
 		$rule = [
-			['nickname', 'require|min:5'],
+			['nickname', 'require|min:5|max:10'],
 			['password','/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,50}$/',
 			'密码必须是6-15位之间的数字加字母'],
 			['email','require|email', '需要正确的email地址']
@@ -81,6 +95,16 @@ class User extends Controller
 	//跳转进入用户登录界面
 	public function login_form()
 	{	
+		$session = $this->get_session();
+		//渲染顶部的导航条 没登录就是默认Stranger，登录状态为0
+		if(isset($session)){
+			//登录了的用户就直接重定向到首页了
+			return $this->redirect(url('/'));
+		}else{
+			$user_data =['nickname' => 'Stranger', 'status' => 0];
+		}
+		$this->assign('user_data', $user_data);
+
 		return $this->fetch('user/login');
 	}
 
@@ -110,7 +134,7 @@ class User extends Controller
 			//添加session
 			Session::set('user_data', $user->to_session());
 			
-			return $this->success('欢迎回来！', url('/show_posts'));
+			return $this->success('欢迎回来！', url('/'));
 		}else{
 			return $this->error('密码错误，请重试');
 		}
@@ -119,7 +143,7 @@ class User extends Controller
 	//用户退出登录
 	public function logout()
 	{	
-		$session = Session::get('user_data');
+		$session = $this->get_session();
 		//设置session,如果已经有session了，先销毁了
 		//获取当前用户对象
 		$user = UserModel::get(['email'=>$session['email']]);
@@ -143,7 +167,7 @@ class User extends Controller
 			return $this->info($user, true);
 		}
 		//否则视为未登入用户，让他先登入才能看用户资料
-		return $this->error('请先登入！', url('user/login_form'));
+		return $this->error('请先登入！', url('/user/login_form'));
 
 	}
 
@@ -154,9 +178,25 @@ class User extends Controller
 	 */
 	public function info($user, $is_me)
 	{	
-		//关注者是该用户的关注列表
+		//关注者是否在该用户的关注列表
 		$query = ['following' => $user['email']];
 		$paginate = FollowingModel::where($query)->paginate();
+
+		//获得正登录的用户‘我’的数据
+		$me = $this->get_session();
+		//当然，得先登录
+		if(!isset($me)){
+			return $this->error('请先登入！', url('/user/login_form'));
+		}
+
+		$query = ['following' => $me['email'], 'be_followed' => $user['email']];
+		$is_friend = FollowingModel::get($query);
+		//如果记录为空则证明不是朋友
+		if(empty($is_friend)){
+			$is_friend = true;
+		}else{
+			$is_friend = false;
+		}
 
 		//这个地方暂时用join查询出该用户关注的对象和对象的头像地址
 		//后面可能会用缓存？或者更好的解决方法
@@ -175,6 +215,7 @@ class User extends Controller
 			'following_list' => $following_list,
 			'paginate'       => $paginate,
 			'is_me'          => '',
+			'is_friend'      => $is_friend,
 		];
 
 		$is_me == true ? $assign['is_me'] = true : $assign['is_me'] = false;
@@ -185,14 +226,14 @@ class User extends Controller
 	//用户搜索好友
 	public function friends()
     {	
-    	if(!Session::has('user_data')){
-			return $this->error('请先登入！', url('user/login_form'));
+    	$session = $this->get_session();
+    	if(!isset($session)){
+			return $this->error('请先登入！', url('/user/login_form'));
 		}
-		$username = Session::get('user_data')['nickname'];
 
     	$post = input('post.');
-    	if(!$post){
-    		$this->assign(['username'=>$username]);
+    	if(empty($post)){
+    		$this->assign(['user_data'=>$session]);
     		return $this->fetch();
     	}
 
@@ -251,8 +292,10 @@ class User extends Controller
         		$this->update_follow_count($following, $be_followed);
 
         		$respons['result'] = 'Following Success!';
+        		$respons['sign'] = 0;  //标识：没关注过
         	}else{
         		$respons['result'] = 'You have been friend!';
+        		$respons['sign'] = 1;  //标识：已经关注过
         	}
 
         	return $respons;
@@ -260,7 +303,7 @@ class User extends Controller
     }
 
     //查找好友的跳转
-    public function f_hp($email)
+    public function friend_address($email)
     {
     	$user = UserModel::get(['email'=>$email]);
     	return $this->info($user, false);
@@ -270,7 +313,7 @@ class User extends Controller
 	public function update()
 	{	
 		//先获取登录用户逇session
-		$user_data = Session::get('user_data');
+		$user_data = $this->get_session();
 		//用户是否修改资料，由表单发起请求
 		$update = input('post.');
 		if($update){
@@ -279,7 +322,7 @@ class User extends Controller
 			//如果更新了头像
 			$file = request()->file('image');
 			if($file){
-				$info = $file->move(ROOT_PATH . 'public' . DS . 'uploads');
+				$info = $file->validate(['size'=>1048576,'ext'=>'jpg,png,gif'])->move(ROOT_PATH . 'public' . DS . 'uploads');
 				if($info){
 					//图片存放的地址
 					$user_data['pic_path'] = $info->getSaveName();
@@ -302,6 +345,31 @@ class User extends Controller
 		$this->assign('user_data', $user_data);
 		//没有修改资料就是单纯访问页面
 		return $this->fetch();
+	}
+
+	//用户名或者邮件是否注册过的ajax
+	public function is_regist()
+	{	
+		//标识是email或者是nickname
+		$type = request()->param('type');
+		//要验证的数据
+		$data    = request()->param('data');
+
+		$respons = ['status' => 0, 'error' => '该'.$type.'还没被注册！'];
+
+		if($type == 'email'){
+			$user = UserModel::get(['email' => $data]);
+		}elseif ($type == 'nickname') {
+			$user = UserModel::get(['nickname' => $data]);
+		}
+
+		//是否有对应的用户
+		if(isset($user)){
+			$respons['status'] = 1;
+			$respons['error'] = '该'.$type.'已经被注册了！';
+		}
+
+		return $respons;
 	}
 
 
