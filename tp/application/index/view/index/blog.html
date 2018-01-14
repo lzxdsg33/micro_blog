@@ -6,10 +6,10 @@
     <div class="page-header" >
     </div>
     <div class="col-md-12 center-block">
-      <h3 style="color:gray;font-family:Microsoft Yahei;">写下今天发生的事情吧，或者此时此刻你的心情...</h3>
+      <h3 style="color:gray;font-family:Microsoft Yahei;">所思所想, 于纸先行。</h3>
       <form class="form-signin" action="{:url('/blog')}" method="POST" role="form">
-        <div class="form-group  required"><label class="control-label" for="body">What is on your mind ?</label>
-          <textarea class="form-control" id="flask-pagedown-body" name="body" required></textarea>
+        <div class="form-group  required"><label class="control-label" for="body">记录下今天发生的事情或者此时此刻的心情吧(150字)...</label>
+          <textarea class="form-control" id="flask-pagedown-body" name="body" required style=" height:100%;"></textarea>
         </div>
         <button id="sighBtn" type="submit" class="btn btn-primary">发布</button>
       </form>

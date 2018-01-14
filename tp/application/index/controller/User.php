@@ -291,10 +291,10 @@ class User extends Controller
         		//在用户User表里面对粉丝和关注进行添加
         		$this->update_follow_count($following, $be_followed);
 
-        		$respons['result'] = 'Following Success!';
+        		$respons['result'] = '关注成功!';
         		$respons['sign'] = 0;  //标识：没关注过
         	}else{
-        		$respons['result'] = 'You have been friend!';
+        		$respons['result'] = '已经关注过了!';
         		$respons['sign'] = 1;  //标识：已经关注过
         	}
 
@@ -304,7 +304,7 @@ class User extends Controller
 
     //查找好友的跳转
     public function friend_address($email)
-    {
+    {	
     	$user = UserModel::get(['email'=>$email]);
     	return $this->info($user, false);
     }

@@ -15,13 +15,13 @@
       <div class="post-tabs" id="mu">
         <ul class="nav nav-tabs">
           <li class="active">
-            <a id="My" onclick="clickChangeColorAndTag('My')" style="color:#96F;">My</a>
+            <a id="My" onclick="clickChangeColorAndTag('My')" style="color:#96F;">我的</a>
           </li>
           <li class="active">
-            <a id="Followings" onclick="clickChangeColorAndTag('Followings')">Followings</a>
+            <a id="Followings" onclick="clickChangeColorAndTag('Followings')">我关注的</a>
           </li>
           <li class="active">
-            <a  id="All" onclick="clickChangeColorAndTag('All')">All</a>
+            <a  id="All" onclick="clickChangeColorAndTag('All')">所有</a>
           </li>  
         </ul>
         <div id="ajax">
@@ -107,6 +107,25 @@
       function page_jump(page){
         ajax_jump(currnet_tag, page);
         $("#render").html('{$page}');
+      };
+
+      function hide(post_id, status){
+        var hide = '#hide_' + post_id;
+        var show = '#show_' + post_id;
+        $.ajax({
+          url:"{:url('index/index/hide_post')}",
+          data:{id:post_id,type:status},
+          type:"POST",
+          success: function(data){
+            if (status=='show') {
+              $(hide).hide();
+              $(show).show();
+            }else if (status=='hide'){
+              $(hide).show();
+              $(show).hide();
+            }
+          },  
+       });
       };
     </script>
   </body>

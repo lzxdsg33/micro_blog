@@ -5,6 +5,7 @@ use think\Controller;
 use think\Db;
 use think\Request;
 use think\Session;
+use think\Validate;
 use app\index\model\User as UserModel;
 use app\index\model\Post as PostModel;
 use app\index\model\Like as LikeModel;
@@ -21,105 +22,17 @@ class Index extends Controller
         return $this->fetch();
     }
 
-    //返回渲染数据的数组，不同标签返回的数据不一样
-    //默认展示所有文章的标签
-    public function post_arg1($tag='All',$page=1)
+    //判断用户是否登录
+    public function get_session()
     {   
-        //每页1行数
-        $page_per_row = 10;
-        //要取的哪几行数据
-        $rows = ($page-1)*$page_per_row.','.$page_per_row;
-
-        //要渲染的参数
-        $assign = [
-            'body'      => false,  //所有发布过的文章的主体
-            'user_data' => ['nickname' => 'Stranger', 'status' => 0],
-            'page'      => false,
-        ];
-
-        $user_data = $this->get_session();
-        if (isset($user_data)){
-            $assign['user_data'] = $user_data;
-
-            //看看是切换到看哪组心情的标签
-            if($tag == 'My'){
-                //该用户所有发布过的心情
-                // $assign['body'] = PostModel::where(['author' => $user_data['email']])->paginate();  
-                $assign['body'] = Db::table('think_post')
-                                            ->where(['author' => $user_data['email']])
-                                            ->limit($rows)
-                                            ->order('id')
-                                            ->select();  
-                $assign['page'] = PostModel::where(['author' => $user_data['email']])
-                                            // ->paginate($page_per_row,false,['type'=>'Ajaxbootstrap'])
-                                            ->paginate($page_per_row,false,['type'=>'Ajaxbootstrap','page'=>$page])
-                                            ->render();
-            }elseif ($tag == 'Followings') {
-                # code...
-                //先找出该用户关注的所有对象email
-                $following_list = Db::name('followings')->
-                                    where(['following'=>$user_data['email']])->
-                                    field('be_followed')->
-                                    select();
-                //把好友变成数组
-                $temp = [];
-                foreach ($following_list as $key => $value) {
-                    $temp[] = $value['be_followed'];
-                }
-                // $assign['body'] = PostModel::where(['author'=>['in',$temp]])->
-                //                             paginate();
-                $assign['body'] = Db::table('think_post')
-                                    ->where(['author'=>['in',$temp]])
-                                    ->select();
-                $assign['page'] = PostModel::where(['author'=>['in',$temp]])
-                                    ->paginate($page_per_row,false,['type'=>'Ajaxbootstrap','page'=>$page])
-                                    ->render();
-            }else{
-                //列出所有文章出来，根据发布时间倒序排列
-                // $assign['body'] = PostModel::where('id', '>', 0)->order('timestamp desc')->limit(1)->paginate();
-                $assign['body'] = Db::table('think_post')
-                                    ->where('hidden', '=', 0)
-                                    ->limit($rows)
-                                    ->order('timestamp desc')
-                                    ->select();
-                $assign['page'] = PostModel::where('hidden', '=', 0)
-                                    ->paginate($page_per_row,false,['type'=>'Ajaxbootstrap','page'=>$page])
-                                    ->render();
-            }
-
-            //这里是把所有文章的id拿出来去数据库匹配，如果发现这个作者赞过这篇文章
-            //的话设置一个变量为true来标识文章被这哥们赞过了
-            //但是这样做循环遍历着实糟糕，暂时还没想到合适的方法解决，暂时想过外键？
-            $list = [];
-            foreach ($assign['body'] as $key => $value) {
-                $query = [
-                    'post_id'=>$value['id'],
-                    'liked_email'=>$value['author']
-                ];
-
-                //文章是否已经被赞过
-                $is_like = LikeModel::get($query);
-                $value['is_like'] = false;
-                if($is_like){
-                    $value['is_like'] = true;
-                }
-                
-                $value['timestamp'] = date('Y-m-d H:i:s', $value['timestamp']);
-
-                $list[] = $value;
-            }
-
-            $assign['body'] = $list;
-        }
-
-
-        //获得要渲染的数据
-        return $assign;
+        return Session::get('user_data');
     }
 
+    //返回渲染数据的数组，不同标签返回的数据不一样
+    //默认展示所有文章的标签
     public function post_arg($tag='All',$page=1)
     {   
-        //每页1行数
+        //每页行数
         $page_per_row = 10;
         //要取的哪几行数据
         $rows = ($page-1)*$page_per_row.','.$page_per_row;
@@ -128,17 +41,22 @@ class Index extends Controller
         $assign = [
             'body'      => false,  //所有发布过的文章的主体
             'user_data' => ['nickname' => 'Stranger', 'status' => 0],
+            'login'     => false,
             'page'      => false,
         ];
 
         $user_data = $this->get_session();
         if (isset($user_data)){
+            //告知页面用户已登录
+            $assign['login']     = true;
+            //赋值用户信息
             $assign['user_data'] = $user_data;
 
             //看看是切换到看哪组心情的标签
             if($tag == 'My'){
                 //该用户所有发布过的心情 
                 $assign['body'] = PostModel::where(['author' => $user_data['email']])
+                                            ->order('timestamp desc')
                                             ->paginate($page_per_row,false,['type'=>'Ajaxbootstrap','page'=>$page]);
             }elseif ($tag == 'Followings') {
                 # code...
@@ -153,15 +71,15 @@ class Index extends Controller
                     $temp[] = $value['be_followed'];
                 }
 
-                $assign['body'] = PostModel::where(['author'=>['in',$temp]])
+                $assign['body'] = PostModel::where(['author'=>['in',$temp],'hidden'=>['=', 0]])       
+                                    ->order('timestamp desc')
                                     ->paginate($page_per_row,false,['type'=>'Ajaxbootstrap','page'=>$page]);
             }else{
                 //列出所有文章出来，根据发布时间倒序排列
                 $assign['body'] = PostModel::where('hidden', '=', 0)
+                                    ->order('timestamp desc')
                                     ->paginate($page_per_row,false,['type'=>'Ajaxbootstrap','page'=>$page]);
             }
-
-
             //这里是把所有文章的id拿出来去数据库匹配，如果发现这个作者赞过这篇文章
             //的话设置一个变量为true来标识文章被这哥们赞过了
             //但是这样做循环遍历着实糟糕，暂时还没想到合适的方法解决，暂时想过外键？
@@ -173,7 +91,7 @@ class Index extends Controller
 
                 //文章是否已经被赞过
                 $is_like = LikeModel::get($query);
-                if($is_like){
+                if(isset($is_like)){
                     $value->is_like = true;
                 }
                 $value['timestamp'] = date('Y-m-d H:i:s', $value['timestamp']);
@@ -181,12 +99,6 @@ class Index extends Controller
         }
         //获得要渲染的数据
         return $assign;
-    }
-
-    public function get_session()
-    {   
-        //先判断用户是否登录
-            return Session::get('user_data');
     }
 
     //发表心情
@@ -211,6 +123,15 @@ class Index extends Controller
                 'timestamp' => time(),
                 'pic_path'  => $pic_path,
             ];
+
+            //输入的文字最多100个
+            $validate = new Validate(
+                ['body' => 'require|max:150'],
+                ['body.max'=>'字数不能超过150字']
+            );
+            if (!$validate->check($data)) {
+                return $this->error($validate->getError());
+            }
 
             if($post->save($data)){
                 return $this->success('发布成功！', url('/'));
@@ -390,6 +311,19 @@ class Index extends Controller
         $post = PostModel::get(['id' => $post_id]);
         //心情设置显示
         return $post->save(['hidden'=> 0]);
+    }
+
+    //ajax隐藏心情
+    public function hide_post()
+    {
+        $id   = request()->param('id');
+        $type = request()->param('type');
+
+        if ($type == 'show') {
+            $this->show($id);
+        }elseif ($type == 'hide') {
+            $this->hide($id);
+        }
     }
 
     public function test()

@@ -10,7 +10,7 @@
           </div>
           <div class="post-content">
             <div class="post-date"><span>{$post->date_convert()}</span></div>
-            <div class="post-author"><a href="{:url('index/user/friend_address',[$post.author =>'123'])}">{$post.author}</a></div>
+            <div class="post-author"><a href="{:url('index/user/friend_address',[$post.author =>'0'])}">{$post.author}</a></div>
             <div class="post-body">
               <p>{$post.body}</p>
             </div>
@@ -36,7 +36,7 @@
           </div>
           <div class="comment-content">
             <div class="comment-date"><span class="flask-moment">{$comment->date_convert()}</span></div>
-            <div class="comment-author"><a href="{:url('index/user/friend_address',[$comment.comment_author =>'123'])}">{$comment.comment_author}</a></div>
+            <div class="comment-author"><a href="{:url('index/user/friend_address',[$comment.comment_author =>'0'])}">{$comment.comment_author}</a></div>
             <div class="comment-body">{$comment.comment_body}</div>
           </div>
         </li>
