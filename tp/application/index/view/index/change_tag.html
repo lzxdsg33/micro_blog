@@ -1,41 +1,41 @@
 {if $body}
   {volist name="body" id="posts"}
-        <ul class="posts" >
-          <li class="post">
-            <div class="post-thumbnail">
-              <a href="{:url('index/user/friend_address',[$posts.author =>'0'])}">
-                <img class="img-rounded profile-thumbnail" src="/public/uploads/{$posts.pic_path}" style="width: 40px;height: 40px;">
-              </a>
-            </div>
-            <div class="post-content">
-              <div class="post-date"><span>{$posts.timestamp}</span></div>
-              <div class="post-author"><a href="{:url('index/user/friend_address',[$posts.author =>'0'])}">{$posts.author}</a></div>
-              <div class="post-body">
-                <pre style="border:none;font-size:14px;font-family:'微软雅黑';" >{$posts.body}</pre>
-              </div>
-              <div class="post-footer">
-                {if $posts->is_like eq true }
-                <button id="like_btn_{$posts.id}" class="btn btn-success btn-xs" onclick="liked({$posts.id},'{$user_data.email}')"><span>{$posts.liked}</span> 赞</button>
-                {else}
-                <button id="like_btn_{$posts.id}" class="btn btn-primary btn-xs" onclick="liked({$posts.id},'{$user_data.email}')"><span>{$posts.liked}</span> 赞</button>
-                {/if}
-                <a href="{:url('/comments',['id'=>$posts.id])}" class="btn btn-primary btn-xs">{$posts.comments} 评论</a>
-                {if $login and $user_data.email eq $posts.author}
-                  {if $posts.hidden eq 0}
-                    <button id="show_{$posts.id}" class="btn btn-info btn-xs" onclick="hide({$posts.id},'hide')">可见</button>
-                    <button id="hide_{$posts.id}" class="btn btn-warning btn-xs" onclick="hide({$posts.id},'show')" style="DISPLAY:none">隐藏</button>
-                  {else}
-                    <button id="show_{$posts.id}" class="btn btn-info btn-xs" onclick="hide({$posts.id},'hide')" style="DISPLAY:none">可见</button>
-                    <button id="hide_{$posts.id}" class="btn btn-warning btn-xs" onclick="hide({$posts.id},'show')">隐藏</button>
-                  {/if}
-                {/if}
-                {if $user_data.email eq $posts.author}
-                <button class="btn btn-danger btn-xs" onclick="del({$posts.id})">删除</button>
-                {/if}
-              </div>
-            </div>
-          </li>
-        </ul>
-        {/volist}
-        <dir id="render">{$body->render()}</dir>
-        {/if}
+    <ul class="posts" >
+      <li class="post">
+        <div class="post-thumbnail">
+          <a href="{:url('index/user/friend_address',[$posts.author =>'0'])}">
+            <img class="img-rounded profile-thumbnail" src="/public/uploads/{$posts.pic_path}" style="width: 40px;height: 40px;">
+          </a>
+        </div>
+        <div class="post-content">
+          <div class="post-date"><span>{$posts.timestamp}</span></div>
+          <div class="post-author"><a href="{:url('index/user/friend_address',[$posts.author =>'0'])}">{$posts.nickname}</a></div>
+          <div class="post-body">
+            <pre style="border:none;font-size:14px;font-family:'微软雅黑';" >{$posts.body}</pre>
+          </div>
+          <div class="post-footer">
+            {if $posts->is_like eq true }
+            <button id="like_btn_{$posts.id}" class="btn btn-success btn-xs" onclick="liked({$posts.id},'{$user_data.email}')"><span>{$posts.liked}</span> 赞</button>
+            {else}
+            <button id="like_btn_{$posts.id}" class="btn btn-primary btn-xs" onclick="liked({$posts.id},'{$user_data.email}')"><span>{$posts.liked}</span> 赞</button>
+            {/if}
+            <a href="{:url('/comments',['id'=>$posts.id])}" class="btn btn-primary btn-xs">{$posts.comments} 评论</a>
+            {if $login and $user_data.email eq $posts.author}
+              {if $posts.hidden eq 0}
+                <button id="show_{$posts.id}" class="btn btn-info btn-xs" onclick="hide({$posts.id},'hide')">可见</button>
+                <button id="hide_{$posts.id}" class="btn btn-warning btn-xs" onclick="hide({$posts.id},'show')" style="DISPLAY:none">隐藏</button>
+              {else}
+                <button id="show_{$posts.id}" class="btn btn-info btn-xs" onclick="hide({$posts.id},'hide')" style="DISPLAY:none">可见</button>
+                <button id="hide_{$posts.id}" class="btn btn-warning btn-xs" onclick="hide({$posts.id},'show')">隐藏</button>
+              {/if}
+            {/if}
+            {if $user_data.email eq $posts.author}
+            <button class="btn btn-danger btn-xs" onclick="del({$posts.id})">删除</button>
+            {/if}
+          </div>
+        </div>
+      </li>
+    </ul>
+  {/volist}
+    <dir id="render">{$body->render()}</dir>
+{/if}

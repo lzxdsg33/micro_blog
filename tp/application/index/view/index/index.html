@@ -1,36 +1,49 @@
 {include file="common/header" /}
   <body>
     {include file="common/top" /}
-    <div class="jumbotron">
-      <div class="container">
-        <h1>Hello, <span style="color:#c9c; ">{$user_data.nickname}</span> !</h1>
-        <p><strong style="color:#630;">天地悠悠，大道至简。</strong></p>
-        <p><strong style="color:#630;">"Simple-Talk": 纯文字短心情博客, 这里没有表情, 一切的心情通过你的文字所表达。 </strong></p>
-        <p><strong style="color:#630;">这弹丸之地初衷是希望文字能真正纯粹而简单, 思你所想, 畅所欲言。简单、富足而快乐~愿你能在这片简单的地方领略到文字的纯粹魅力! 如果你已经准备好试玩一下的话, 注册完点击下面"分享心情"按钮吧!</strong></p>
-        <p><i style="color:#777;">Tips: 自由, 即是这里的唯一规则, 当然, 也可以用颜文字来表达此时你的心情, 比如说: </i>&nbsp;&nbsp; :) &nbsp;&nbsp;&nbsp; :(&nbsp;&nbsp;&nbsp; =)&nbsp;&nbsp;</p>
-        <p><a class="btn btn-primary btn-lg" href="{:url('index/index/blog')}" role="button">分享心情.. &raquo;</a></p>
-      </div>
-    </div>
-    <div class="container">
-      <div class="post-tabs" id="mu">
-        <ul class="nav nav-tabs">
-          <li class="active">
-            <a id="My" onclick="clickChangeColorAndTag('My')" style="color:#96F;">我的</a>
-          </li>
-          <li class="active">
-            <a id="Followings" onclick="clickChangeColorAndTag('Followings')">我关注的</a>
-          </li>
-          <li class="active">
-            <a  id="All" onclick="clickChangeColorAndTag('All')">所有</a>
-          </li>  
-        </ul>
-        <div id="ajax">
-          {include file="index/change_tag" /}
+      <div class="jumbotron">
+        <div class="container">
+          <h1>Hello, <span style="color:#c9c; ">{$user_data.nickname}</span> !</h1>
+          <p><strong style="color:#99c;">天地悠悠，大道至简。</strong></p>
+          <p><strong style="color:#99c;">"Simple-Talk": 纯文字短心情博客, 这里没有表情, 一切的心情通过你的文字所表达。 </strong></p>
+          <p><strong style="color:#99c;">这弹丸之地初衷是希望文字能真正纯粹而简单, 思你所想, 畅所欲言。简单、富足而快乐~愿你能在这片简单的地方领略到文字的纯粹魅力! 如果你已经准备好试玩一下的话, 注册完点击下面"分享心情"按钮吧!</strong></p>
+          <p><i style="color:#777;">Tips: 自由, 即是这里的唯一规则, 当然, 也可以用颜文字来表达此时你的心情, 比如说: </i>&nbsp;&nbsp; :) &nbsp;&nbsp;&nbsp; :(&nbsp;&nbsp;&nbsp; =)&nbsp;&nbsp;</p>
+          <p><a class="btn btn-primary btn-lg" href="{:url('index/index/blog')}" role="button">分享心情.. &raquo;</a></p>
         </div>
       </div>
-    </div>
+      <div class="container" id="test">
+        <div class="post-tabs" id="mu">
+          <ul class="nav nav-tabs" >
+            <li class="active">
+              <a id="My" onclick="clickChangeColorAndTag('My')" style="color:#96F;">我的</a>
+            </li>
+            <li class="active">
+              <a id="Followings" onclick="clickChangeColorAndTag('Followings')">我关注的</a>
+            </li>
+            <li class="active">
+              <a  id="All" onclick="clickChangeColorAndTag('All')">所有</a>
+            </li>  
+          </ul>
+          <div id="ajax">
+            {include file="index/change_tag" /}
+          </div>
 
+          <div class="footer">
+            <div>&copy;<span>2018 &nbsp;&nbsp;4NewBorn</span></div>
+            <div class="footer-inner">Author:&nbsp;<a href="http://www.whistlalk.com">Zeex</a>&nbsp;&nbsp;/&nbsp;&nbsp;Email:&nbsp;<a href="mailto:403580791@qq.com">403580791@qq.com</a></div>
+            <div>友情链接:
+            <a href="http://www.php20.cn/">仙士可博客</a>&nbsp;|&nbsp;
+            <a href="http://yuri2.cn/blog/">Yuri2's Blog</a>&nbsp;|&nbsp;
+            <a href="http://www.thinkphp.cn/">ThinkPHP</a>&nbsp;|&nbsp;
+            <a href="http://laravelacademy.org/">Laravel学院</a>&nbsp;|&nbsp;
+            <a href="http://v3.bootcss.com/">Bootstrap</a>&nbsp;|&nbsp;
+            <a href="http://php.net/">PHP</a>&nbsp;|&nbsp;
+            </div>
+            <div>"山重水复疑无路,柳暗花明又一村"</div>
+          </div>
 
+        </div>
+      </div>
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script type="text/javascript">
@@ -129,4 +142,5 @@
       };
     </script>
   </body>
+
 </html>
